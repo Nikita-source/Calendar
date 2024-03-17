@@ -1,0 +1,44 @@
+version: '3.3'
+
+services:
+
+  springboot:
+    container_name: springboot
+    build: .
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - mysqldb
+      - redis
+    networks:
+      - app-network
+
+  mysqldb:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    networks:
+      - app-network
+    environment:
+      MYSQL_ROOT_PASSWORD: 2345wertsdfgxcvb
+      MYSQL_DATABASE: Calendar
+    ports:
+      - "3306:3306"
+    volumes:
+      - my-db:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - app-network
+    ports:
+      - "6379:6379"
+
+
+volumes:
+  my-db:
+
+networks:
+  app-network: {}
